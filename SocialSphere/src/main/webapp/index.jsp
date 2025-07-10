@@ -5,6 +5,7 @@
         response.sendRedirect("StartPage.html");
         return;
     }
+    String postError = request.getParameter("postError");
     Connection conn = SocialSphere.util.DBUtil.getConnection();
     PostDAOImpl postDAO = new PostDAOImpl(conn);
     CommentDAOImpl commentDAO = new CommentDAOImpl(conn);
@@ -26,6 +27,9 @@
 <h3>Create a Post</h3>
 <form action="CreatePostServlet" method="post">
     Title: <input type="text" name="title"><br>
+    <% if (postError != null) { %>
+        <span style="color:red;">Post title is required.</span><br>
+    <% } %>
     Content:<br>
     <textarea name="content" rows="4" cols="40"></textarea><br>
     <input type="submit" value="Post">
