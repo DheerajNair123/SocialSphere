@@ -26,6 +26,11 @@ public class CreatePostServlet extends HttpServlet {
         String content = req.getParameter("content");
         User user = (User) session.getAttribute("user");
 
+        if (title == null || title.trim().isEmpty()) {
+            res.sendRedirect("index.jsp?postError=1");
+            return;
+        }
+
         try (Connection conn = DBUtil.getConnection()) {
             if (conn == null) {
                 res.getWriter().println("Database connection error. Please try again later.");
