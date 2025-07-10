@@ -7,6 +7,39 @@ it will create .mv file, make sure to make the connection to that file(do not co
 
 DELETE FROM COMMENTS;
 
+
+✅ Users Table
+CREATE TABLE IF NOT EXISTS Users (
+    UserId INT AUTO_INCREMENT PRIMARY KEY,
+    UserName VARCHAR(255) NOT NULL,
+    UserPassword VARCHAR(255) NOT NULL,
+    UserEmail VARCHAR(255) NOT NULL UNIQUE
+);
+
+
+✅ Post Table
+CREATE TABLE IF NOT EXISTS Post (
+    PostId INT AUTO_INCREMENT PRIMARY KEY,
+    PostTitle VARCHAR(255) NOT NULL,
+    PostContent TEXT NOT NULL,
+    UserId INT NOT NULL,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
+);
+
+
+✅ Comments Table
+CREATE TABLE IF NOT EXISTS Comments (
+    CommentId INT AUTO_INCREMENT PRIMARY KEY,
+    CommentContent TEXT NOT NULL,
+    UserId INT NOT NULL,
+    PostId INT NOT NULL,
+    Timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
+    FOREIGN KEY (PostId) REFERENCES Post(PostId) ON DELETE CASCADE
+);
+
+
 1. Java EE Web Application Structure
 Servlets: Java classes that handle HTTP requests and responses. They act as controllers in your app, processing form data, managing sessions, and interacting with the database.
 JSP (JavaServer Pages): Used for rendering dynamic HTML content. JSPs can use Java code (scriptlets) to display data from the backend.
