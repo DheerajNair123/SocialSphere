@@ -5,3 +5,4 @@ open h2 console
 in console path => jdbc:h2:file:C:/Users/dheer/IdeaProjects/SocialSphere/SocialSphere
 it will create .mv file, make sure to make the connection to that file(do not copy .mv)
 
+DELETE FROM COMMENTS;
