@@ -46,6 +46,8 @@
         out.println("<input type='hidden' name='postId' value='" + post.getPostId() + "'/>");
         out.println("Comment: <input type='text' name='comment'/><input type='submit' value='Add Comment'/></form>");
 
+        int commentCountForPost = commentDAO.getCommentCountByPostId(post.getPostId());
+        out.println("<div style='margin-left:20px; color:black;'>Comments for this post: " + commentCountForPost + "</div>");
         List<Comment> comments = commentDAO.getCommentsByPostId(post.getPostId());
         for (Comment c : comments) {
             User commentUser = userDAO.getUserById(c.getUserId());
