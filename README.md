@@ -77,6 +77,11 @@ CREATE TABLE IF NOT EXISTS Comments (
 );
 ```
 
+Alter the Post Table from start
+```sql
+ALTER TABLE POST ALTER COLUMN PostId RESTART WITH 1;
+```
+
 ### 3. Application Deployment
 
 1. Deploy the WAR file to your Tomcat server
