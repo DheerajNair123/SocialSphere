@@ -39,5 +39,16 @@ public class CommentDAOImpl {
         }
         return comments;
     }
+
+    public int getCommentCountByPostId(int postId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Comments WHERE PostId=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, postId);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+        return 0;
+    }
 }
 
