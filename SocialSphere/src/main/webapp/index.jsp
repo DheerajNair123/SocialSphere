@@ -18,44 +18,73 @@
     }
 %>
 <html>
-<head><title>Home</title></head>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    </head>
 <body>
-<h2>Welcome, <%= user.getUserName() %>!</h2>
-<a href="LogoutServlet">Logout</a>
-<p>Total Posts: <%= postCount %> | Total Comments: <%= commentCount %></p>
+<div class="app-container">
+    <div class="app-header">
+        <h1>SocialSphere</h1>
+        <div>
+            <span class="app-meta">Welcome, <%= user.getUserName() %>!</span>
+            &nbsp;&nbsp;|&nbsp;&nbsp;<a class="logout" href="LogoutServlet">Logout</a>
+        </div>
+    </div>
 
-<h3>Create a Post</h3>
-<form action="CreatePostServlet" method="post">
-    Title: <input type="text" name="title"><br>
-    <% if (postError != null) { %>
-        <span style="color:red;">Post title is required.</span><br>
-    <% } %>
-    Content:<br>
-    <textarea name="content" rows="4" cols="40"></textarea><br>
-    <input type="submit" value="Post">
-</form>
-<hr>
+    <div class="card">
+        <div class="app-meta">Total Posts: <%= postCount %> &nbsp;|&nbsp; Total Comments: <%= commentCount %></div>
+        <h3 style="margin-top:12px;">Create a Post</h3>
+        <form action="CreatePostServlet" method="post">
+            <div class="form-row">Title: <input type="text" name="title"></div>
+            <% if (postError != null) { %>
+                <div style="color:var(--danger); margin-top:6px;">Post title is required.</div>
+            <% } %>
+            <div style="margin-top:8px;">Content:<br>
+                <textarea name="content" rows="4" cols="40"></textarea>
+            </div>
+            <div style="margin-top:8px;"><input class="btn" type="submit" value="Post"></div>
+        </form>
+    </div>
 
-<h3>All Posts</h3>
-<%
-    for (Post post : posts) {
-        User postUser = userDAO.getUserById(post.getUserId());
-        String postUserName = (postUser != null) ? postUser.getUserName() : ("User ID " + post.getUserId());
-        out.println("<div><b>" + post.getPostTitle() + "</b> by " + postUserName + " at " + post.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + "<br>" + post.getPostContent() + "</div>");
-        out.println("<form action='CommentServlet' method='post'>");
-        out.println("<input type='hidden' name='postId' value='" + post.getPostId() + "'/>");
-        out.println("Comment: <input type='text' name='comment'/><input type='submit' value='Add Comment'/></form>");
+    <h3 style="margin-top:16px;">All Posts</h3>
+    <%
+        for (Post post : posts) {
+            User postUser = userDAO.getUserById(post.getUserId());
+            String postUserName = (postUser != null) ? postUser.getUserName() : ("User ID " + post.getUserId());
+    %>
+        <div class="card">
+            <div class="post-title"><b><%= post.getPostTitle() %></b></div>
+            <div class="post-meta">by <%= postUserName %> at <%= post.getTimestamp().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) %></div>
+            <div class="post-content"><%= post.getPostContent() %></div>
 
-        int commentCountForPost = commentDAO.getCommentCountByPostId(post.getPostId());
-        out.println("<div style='margin-left:20px; color:black;'>Comments for this post: " + commentCountForPost + "</div>");
-        List<Comment> comments = commentDAO.getCommentsByPostId(post.getPostId());
-        for (Comment c : comments) {
-            User commentUser = userDAO.getUserById(c.getUserId());
-            String commentUserName = (commentUser != null) ? commentUser.getUserName() : ("User ID " + c.getUserId());
-            out.println("<div style='margin-left:20px;'>Comment by " + commentUserName + ": " + c.getCommentContent() + "</div>");
+            <form action="CommentServlet" method="post" class="comment-form">
+                <input type="hidden" name="postId" value="<%= post.getPostId() %>"/>
+                <div class="form-row">
+                    <input type="text" name="comment" placeholder="Add a comment..." />
+                    <input class="btn" type="submit" value="Add" />
+                </div>
+            </form>
+
+            <div class="comments">
+                <div class="app-meta">Comments for this post: <%= commentDAO.getCommentCountByPostId(post.getPostId()) %></div>
+                <%
+                    List<Comment> comments = commentDAO.getCommentsByPostId(post.getPostId());
+                    for (Comment c : comments) {
+                        User commentUser = userDAO.getUserById(c.getUserId());
+                        String commentUserName = (commentUser != null) ? commentUser.getUserName() : ("User ID " + c.getUserId());
+                %>
+                    <div class="comment"><small>Comment by <%= commentUserName %></small><div><%= c.getCommentContent() %></div></div>
+                <%
+                    }
+                %>
+            </div>
+        </div>
+    <%
         }
-        out.println("<hr>");
-    }
-%>
+    %>
+
+</div>
 </body>
 </html>
